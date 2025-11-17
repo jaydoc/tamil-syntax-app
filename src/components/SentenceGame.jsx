@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 
-// Each exercise is explicitly grounded in the grammar PDF,
-// but explanations are simplified for Yogi.
+// Exercises: grounded in the grammar PDF, but answers are NOT displayed by default.
 const EXERCISES = [
   // ===== NOMINAL SENTENCES =====
   {
@@ -9,44 +8,42 @@ const EXERCISES = [
     concept: "Nominal sentence",
     level: 1,
     englishPrompt: "I am Amma.",
-    tamilTarget: "நான் அம்மா",
+    tamilTarget: "???? ?????",
     explanation:
-      "Tamil doesn’t use a word like 'am' here. Two nouns side by side make a full sentence: நான் + அம்மா.",
-    tiles: ["நான்", "அம்மா"],
-    solutions: [["நான்", "அம்மா"]],
+      "Tamil doesn�t use a word like 'am' here. Two nouns side by side make a full sentence.",
+    tiles: ["????", "?????"],
+    solutions: [["????", "?????"]],
   },
   {
     id: "nominal-2",
     concept: "Nominal sentence",
     level: 1,
     englishPrompt: "I am not Amma.",
-    tamilTarget: "நான் அம்மா இல்லை",
-    explanation:
-      "To negate a nominal sentence, you just add இல்லை (no / not) at the end.",
-    tiles: ["நான்", "அம்மா", "இல்லை"],
-    solutions: [["நான்", "அம்மா", "இல்லை"]],
+    tamilTarget: "???? ????? ?????",
+    explanation: "To negate, you just add ????? (no / not) at the end.",
+    tiles: ["????", "?????", "?????"],
+    solutions: [["????", "?????", "?????"]],
   },
   {
     id: "nominal-3",
     concept: "Nominal sentence",
     level: 1,
     englishPrompt: "Am I Amma?",
-    tamilTarget: "நான் அம்மனா?",
-    explanation:
-      "Yes/no questions add the sound -ஆ to the second noun: அம்மா → அம்மனா?.",
-    tiles: ["நான்", "அம்மனா?"],
-    solutions: [["நான்", "அம்மனா?"]],
+    tamilTarget: "???? ???????",
+    explanation: "Yes/no questions add the sound -? to the second noun.",
+    tiles: ["????", "???????"],
+    solutions: [["????", "???????"]],
   },
   {
     id: "nominal-4",
     concept: "Nominal sentence",
     level: 1,
     englishPrompt: "Who am I?",
-    tamilTarget: "நான் யார்?",
+    tamilTarget: "???? ?????",
     explanation:
-      "If the second word is a question word like யார்? (who?), you don’t add -ஆ. Just நான் + யார்?.",
-    tiles: ["நான்", "யார்?"],
-    solutions: [["நான்", "யார்?"]],
+      "Here the second word is a question word ????? (who?), no -? added.",
+    tiles: ["????", "?????"],
+    solutions: [["????", "?????"]],
   },
 
   // ===== SOV + NULL-SUBJECT =====
@@ -55,63 +52,62 @@ const EXERCISES = [
     concept: "Null-subject verb",
     level: 2,
     englishPrompt: "I am reading / learning.",
-    tamilTarget: "படிக்கிறேன்",
+    tamilTarget: "???????????",
     explanation:
-      "One verb form can be a whole sentence. The ending -கிறேன் already tells us 'I (present tense)'. No நான் needed.",
-    tiles: ["படிக்கிறேன்"],
-    solutions: [["படிக்கிறேன்"]],
+      "One verb form can be a whole sentence. The ending -?????? already tells us 'I (present tense)'.",
+    tiles: ["???????????"],
+    solutions: [["???????????"]],
   },
   {
     id: "sov-2",
     concept: "SOV structure",
     level: 2,
     englishPrompt: "I read the book.",
-    tamilTarget: "நான் புத்தகத்தை படிக்கிறேன்",
+    tamilTarget: "???? ?????????? ???????????",
     explanation:
-      "Basic Tamil word order is Subject–Object–Verb: நான் (subject) + புத்தகத்தை (book + -ஐ object) + படிக்கிறேன் (verb).",
-    tiles: ["நான்", "புத்தகத்தை", "படிக்கிறேன்"],
-    solutions: [["நான்", "புத்தகத்தை", "படிக்கிறேன்"]],
+      "Basic order: Subject�Object�Verb. ???? (subject) + ?????????? (book + -?) + ??????????? (verb).",
+    tiles: ["????", "??????????", "???????????"],
+    solutions: [["????", "??????????", "???????????"]],
   },
 
   // ===== CASE-MARKED OBJECTS & INDIRECT OBJECTS =====
   {
     id: "case-1",
-    concept: "Accusative (-ஐ)",
+    concept: "Accusative (-?)",
     level: 3,
     englishPrompt: "Seeran met Maaran.",
-    tamilTarget: "சேரன் மாறனை சந்தித்தான்",
+    tamilTarget: "????? ????? ???????????",
     explanation:
-      "The object gets the -ஐ ending. மாறன் (Maaran) → மாறனை (Maaran + -ஐ). Sentence is Subject–Object–Verb.",
-    tiles: ["சேரன்", "மாறனை", "சந்தித்தான்"],
-    solutions: [["சேரன்", "மாறனை", "சந்தித்தான்"]],
+      "The object gets the -? ending. ????? ? ?????. Sentence is Subject�Object�Verb.",
+    tiles: ["?????", "?????", "???????????"],
+    solutions: [["?????", "?????", "???????????"]],
   },
   {
     id: "case-2",
-    concept: "Dative (-உக்கு)",
+    concept: "Dative (-?????)",
     level: 3,
     englishPrompt: "Seeran gave the book to Maaran.",
-    tamilTarget: "சேரன் மாறனுக்கு புத்தகத்தை கொடுத்தான்",
+    tamilTarget: "????? ????????? ?????????? ??????????",
     explanation:
-      "Dative -உக்கு marks 'to whom'. மாறன் → மாறனுக்கு (to Maaran). புத்தகத்தை has -ஐ to mark the direct object.",
-    tiles: ["சேரன்", "மாறனுக்கு", "புத்தகத்தை", "கொடுத்தான்"],
-    // allow two natural orders: S-IO-O-V and S-O-IO-V
+      "Dative -????? marks 'to whom'. ????? ? ?????????. ?????????? has -? as the direct object.",
+    tiles: ["?????", "?????????", "??????????", "??????????"],
     solutions: [
-      ["சேரன்", "மாறனுக்கு", "புத்தகத்தை", "கொடுத்தான்"],
-      ["சேரன்", "புத்தகத்தை", "மாறனுக்கு", "கொடுத்தான்"],
+      ["?????", "?????????", "??????????", "??????????"],
+      ["?????", "??????????", "?????????", "??????????"],
     ],
   },
 
-  // ===== LOCATIVE / PLACE (optional but nice) =====
+  // ===== LOCATIVE =====
   {
     id: "case-3",
-    concept: "Locative (-இல்)",
+    concept: "Locative (-???)",
     level: 3,
     englishPrompt: "The boy is in the house.",
-    tamilTarget: "பையன் வீட்டில் இருக்கிறான்",
+    tamilTarget: "????? ???????? ???????????",
     explanation:
-      "-இல் marks 'in / at'. வீடு (house) → வீட்டில் (in the house). Verb still comes last.",
-    tiles: ["பையன்", "வீட்டில்", "இருக்கிறான்"],
-    solutions: [["பையன்", "வீட்டில்", "இருக்கிறான்"]],
+      "-??? marks 'in / at'. ???? ? ????????. Verb still comes last.",
+    tiles: ["?????", "????????", "???????????"],
+    solutions: [["?????", "????????", "???????????"]],
   },
 
   // ===== SERIAL VERBS (ADVANCED) =====
@@ -120,33 +116,32 @@ const EXERCISES = [
     concept: "Serial verbs (advanced)",
     level: 4,
     englishPrompt: "I took the book, went to school, and studied the lesson.",
-    tamilTarget: "நான் புத்தகத்தை எடுத்துப் பாடசாலைக்குச் சென்று பாடம் படித்தேன்",
+    tamilTarget: "???? ?????????? ????????? ????????????? ?????? ????? ?????????",
     explanation:
-      "Serial verbs chain actions. The last verb படித்தேன் is the main finite verb. எடுத்து, சென்று share its person/tense.",
+      "Serial verbs chain actions. The last verb ????????? is the main one; the others share its person/tense.",
     tiles: [
-      "நான்",
-      "புத்தகத்தை",
-      "எடுத்துப்",
-      "பாடசாலைக்குச்",
-      "சென்று",
-      "பாடம்",
-      "படித்தேன்",
+      "????",
+      "??????????",
+      "?????????",
+      "?????????????",
+      "??????",
+      "?????",
+      "?????????",
     ],
     solutions: [
       [
-        "நான்",
-        "புத்தகத்தை",
-        "எடுத்துப்",
-        "பாடசாலைக்குச்",
-        "சென்று",
-        "பாடம்",
-        "படித்தேன்",
+        "????",
+        "??????????",
+        "?????????",
+        "?????????????",
+        "??????",
+        "?????",
+        "?????????",
       ],
     ],
   },
 ];
 
-// Helper: compare two arrays of tiles
 function arraysEqual(a, b) {
   if (a.length !== b.length) return false;
   return a.every((x, i) => x === b[i]);
@@ -161,6 +156,7 @@ const SentenceGame = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slots, setSlots] = useState([]);
   const [feedback, setFeedback] = useState(null); // "correct" | "incorrect" | null
+  const [showAnswer, setShowAnswer] = useState(false);
 
   const concepts = useMemo(() => {
     const base = ["All"];
@@ -178,41 +174,41 @@ const SentenceGame = () => {
   const handleTileClick = (tile) => {
     setSlots((prev) => [...prev, tile]);
     setFeedback(null);
+    setShowAnswer(false);
   };
 
   const handleSlotClick = (index) => {
     setSlots((prev) => prev.filter((_, i) => i !== index));
     setFeedback(null);
+    setShowAnswer(false);
   };
 
   const handleClear = () => {
     setSlots([]);
     setFeedback(null);
+    setShowAnswer(false);
   };
 
   const handleCheck = () => {
     if (!exercise || slots.length === 0) return;
     const ok = isCorrectAnswer(exercise, slots);
     setFeedback(ok ? "correct" : "incorrect");
+    // don't auto-show answer; that's your call via the button
   };
 
   const goToExercise = (newIndex) => {
-    let idx = newIndex;
     const total = filteredExercises.length;
+    let idx = newIndex;
     if (idx < 0) idx = total - 1;
     if (idx >= total) idx = 0;
     setCurrentIndex(idx);
     setSlots([]);
     setFeedback(null);
+    setShowAnswer(false);
   };
 
-  const handleNext = () => {
-    goToExercise(currentIndex + 1);
-  };
-
-  const handlePrev = () => {
-    goToExercise(currentIndex - 1);
-  };
+  const handleNext = () => goToExercise(currentIndex + 1);
+  const handlePrev = () => goToExercise(currentIndex - 1);
 
   const handleConceptChange = (e) => {
     const newConcept = e.target.value;
@@ -220,11 +216,10 @@ const SentenceGame = () => {
     setCurrentIndex(0);
     setSlots([]);
     setFeedback(null);
+    setShowAnswer(false);
   };
 
-  if (!exercise) {
-    return <div>Loading…</div>;
-  }
+  if (!exercise) return <div>Loading�</div>;
 
   return (
     <div
@@ -235,8 +230,14 @@ const SentenceGame = () => {
         <header className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-bold">Tamil Sentence Builder</h1>
-            <p style={{ color: "#64748b", fontSize: "0.85rem", marginTop: "0.25rem" }}>
-              Practising: {exercise.concept} · Level {exercise.level}
+            <p
+              style={{
+                color: "#64748b",
+                fontSize: "0.85rem",
+                marginTop: "0.25rem",
+              }}
+            >
+              Practising: {exercise.concept} � Level {exercise.level}
             </p>
           </div>
 
@@ -269,18 +270,15 @@ const SentenceGame = () => {
           </div>
         </header>
 
-        {/* Prompt + target (for parent/teacher reference) */}
+        {/* Prompt only (no Tamil answer shown) */}
         <section className="space-y-1">
           <p style={{ color: "#0f172a" }}>
-            <span style={{ fontWeight: 600 }}>English:</span> {exercise.englishPrompt}
-          </p>
-          <p style={{ color: "#0f172a" }}>
-            <span style={{ fontWeight: 600 }}>Target Tamil:</span>{" "}
-            <span style={{ fontSize: "1.1rem" }}>{exercise.tamilTarget}</span>
+            <span style={{ fontWeight: 600 }}>English:</span>{" "}
+            {exercise.englishPrompt}
           </p>
         </section>
 
-        {/* Pattern explanation */}
+        {/* Pattern tip for you to explain verbally */}
         <section
           style={{
             backgroundColor: "#eff6ff",
@@ -291,7 +289,7 @@ const SentenceGame = () => {
             color: "#1e293b",
           }}
         >
-          <span style={{ fontWeight: 600 }}>Pattern tip:</span>{" "}
+          <span style={{ fontWeight: 600 }}>Pattern tip (for Appa): </span>
           {exercise.explanation}
         </section>
 
@@ -309,7 +307,7 @@ const SentenceGame = () => {
           >
             {slots.length === 0 && (
               <span className="text-xs" style={{ color: "#94a3b8" }}>
-                Your sentence will appear here…
+                Your sentence will appear here�
               </span>
             )}
             {slots.map((word, idx) => (
@@ -350,21 +348,21 @@ const SentenceGame = () => {
           </div>
         </section>
 
-        {/* Feedback + controls */}
+        {/* Feedback + controls + optional reveal */}
         <section className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             {feedback === "correct" && (
               <span style={{ color: "#16a34a", fontWeight: 500 }}>
-                ✔ Correct! Super.
+                ? Correct! Super.
               </span>
             )}
             {feedback === "incorrect" && (
               <span style={{ color: "#dc2626", fontWeight: 500 }}>
-                ✖ Not quite. Try moving or removing a word.
+                ? Not quite. Try moving or removing a word.
               </span>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               type="button"
               onClick={handleClear}
@@ -391,7 +389,7 @@ const SentenceGame = () => {
               className="px-3 py-1 rounded-lg border text-sm"
               style={{ borderColor: "#cbd5f5" }}
             >
-              ◀ Prev
+              ? Prev
             </button>
             <button
               type="button"
@@ -399,7 +397,19 @@ const SentenceGame = () => {
               className="px-3 py-1 rounded-lg border text-sm"
               style={{ borderColor: "#cbd5f5" }}
             >
-              Next ▶
+              Next ?
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAnswer((s) => !s)}
+              className="px-3 py-1 rounded-lg border text-xs"
+              style={{
+                borderColor: "#eab308",
+                backgroundColor: "#fef9c3",
+                color: "#854d0e",
+              }}
+            >
+              {showAnswer ? "Hide answer" : "Show answer (for Appa)"}
             </button>
           </div>
         </section>
@@ -411,6 +421,21 @@ const SentenceGame = () => {
           </p>
           <p className="text-xl mt-1">{slots.join(" ")}</p>
         </section>
+
+        {/* Hidden answer reveal (small, clearly �teacher-only�) */}
+        {showAnswer && (
+          <section
+            style={{
+              marginTop: "0.5rem",
+              fontSize: "0.85rem",
+              color: "#0f172a",
+              textAlign: "center",
+            }}
+          >
+            <span style={{ fontWeight: 600 }}>Correct Tamil:</span>{" "}
+            <span style={{ fontSize: "1rem" }}>{exercise.tamilTarget}</span>
+          </section>
+        )}
       </div>
     </div>
   );
