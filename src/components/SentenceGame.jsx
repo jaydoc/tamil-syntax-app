@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 // Exercises grounded in the Tamil grammar PDF.
 // Answers (tamilTarget) are NOT shown by default.
@@ -157,7 +157,7 @@ const SentenceGame = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slots, setSlots] = useState([]);
   const [feedback, setFeedback] = useState(null); // "correct" | "incorrect" | null
-  const [showAnswer, setShowAnswer] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false); // controlled by secret shortcut
 
   const concepts = useMemo(() => {
     const base = ["All"];
@@ -171,6 +171,18 @@ const SentenceGame = () => {
   }, [currentConcept]);
 
   const exercise = filteredExercises[currentIndex] || filteredExercises[0];
+
+  // Secret keyboard shortcut: Ctrl + Alt + S toggles answer visibility.
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.altKey && (e.key === "s" || e.key === "S")) {
+        e.preventDefault();
+        setShowAnswer((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const handleTileClick = (tile) => {
     setSlots((prev) => [...prev, tile]);
@@ -279,7 +291,7 @@ const SentenceGame = () => {
           </p>
         </section>
 
-        {/* Pattern tip for you */}
+        {/* Pattern tip for you (but harmless if she reads it) */}
         <section
           style={{
             backgroundColor: "#eff6ff",
@@ -290,7 +302,7 @@ const SentenceGame = () => {
             color: "#1e293b",
           }}
         >
-          <span style={{ fontWeight: 600 }}>Pattern tip (for Appa): </span>
+          <span style={{ fontWeight: 600 }}>Pattern tip:</span>{" "}
           {exercise.explanation}
         </section>
 
@@ -400,18 +412,6 @@ const SentenceGame = () => {
             >
               Next ▶
             </button>
-            <button
-              type="button"
-              onClick={() => setShowAnswer((s) => !s)}
-              className="px-3 py-1 rounded-lg border text-xs"
-              style={{
-                borderColor: "#eab308",
-                backgroundColor: "#fef9c3",
-                color: "#854d0e",
-              }}
-            >
-              {showAnswer ? "Hide answer" : "Show answer (for Appa)"}
-            </button>
           </div>
         </section>
 
@@ -423,7 +423,7 @@ const SentenceGame = () => {
           <p className="text-xl mt-1">{slots.join(" ")}</p>
         </section>
 
-        {/* Optional answer reveal */}
+        {/* Secret answer reveal (only toggled by Ctrl+Alt+S) */}
         {showAnswer && (
           <section
             style={{
